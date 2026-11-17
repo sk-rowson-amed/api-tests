@@ -1,0 +1,2959 @@
+{
+  "collection": {
+    "_": {
+      "postman_id": "e9f2fd37-b766-42eb-b014-51ba33ba5060",
+      "exporter_id": "60251870",
+      "collection_link": "https://go.postman.co/collection/60251870-e9f2fd37-b766-42eb-b014-51ba33ba5060?source=collection_link"
+    },
+    "item": [
+      {
+        "id": "62ef19ea-53ed-468f-8185-3bb8049f4b51",
+        "name": "Ping",
+        "request": {
+          "description": {
+            "content": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data.",
+            "type": "text/plain"
+          },
+          "url": {
+            "path": [
+              "ping"
+            ],
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "method": "GET"
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "3ae73f70-353e-4e48-b92f-65a35e2cc6de",
+              "type": "text/javascript",
+              "exec": [
+                "pm.test(\"Status code 201\", () => {\n  pm.response.to.have.status(201);\n});\n\npm.test(\"Response time 2 সেকেন্ডের কম\", () => {\n  pm.expect(pm.response.responseTime).to.be.below(2000);\n});"
+              ],
+              "_lastExecutionId": "7170a54e-7b87-48f0-8aa1-e8fdd536c8bb"
+            }
+          }
+        ]
+      },
+      {
+        "id": "67a9ce75-0e63-4cfb-a796-87764e4059c7",
+        "name": "Create Token",
+        "request": {
+          "description": {
+            "content": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code.",
+            "type": "text/plain"
+          },
+          "url": {
+            "path": [
+              "auth"
+            ],
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "732b9a17-b283-4130-9893-6ee0eb6af20d",
+              "type": "text/javascript",
+              "exec": [
+                "pm.test(\"Status code 200\", () => {\n  pm.response.to.have.status(200);\n});\n\npm.test(\"Token এসেছে\", () => {\n  const body = pm.response.json();\n  pm.expect(body.token).to.be.a(\"string\").and.not.empty;\n  pm.environment.set(\"token\", body.token);   // পরের request এর জন্য সেভ\n});"
+              ],
+              "_lastExecutionId": "d5a699bb-0afb-4dc1-954f-f1ffd55e9bb2"
+            }
+          }
+        ]
+      },
+      {
+        "id": "0270bb06-7693-4592-9909-ed9393b1151a",
+        "name": "Login with Wrong Password",
+        "request": {
+          "url": {
+            "path": [
+              "auth"
+            ],
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"wrongpass\"\r\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "99048ccf-095f-49d9-bee4-226cf7271468",
+              "type": "text/javascript",
+              "exec": [
+                "pm.test(\"ভুল login এ token আসেনি\", () => {\r\n  const body = pm.response.json();\r\n  pm.expect(body.token).to.be.undefined;\r\n  pm.expect(body.reason).to.eql(\"Bad credentials\");\r\n});"
+              ],
+              "_lastExecutionId": "e5213d1b-2d0c-4c83-a5ce-f3ed2f497f02"
+            }
+          }
+        ]
+      },
+      {
+        "id": "9967ac70-2b63-4f23-b09e-8c2b798af141",
+        "name": "Create Booking",
+        "request": {
+          "url": {
+            "path": [
+              "booking"
+            ],
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\r\n  \"firstname\": \"Rahul\",\r\n  \"lastname\": \"Das\",\r\n  \"totalprice\": 500,\r\n  \"depositpaid\": true,\r\n  \"bookingdates\": {\r\n    \"checkin\": \"2026-12-01\",\r\n    \"checkout\": \"2026-12-05\"\r\n  },\r\n  \"additionalneeds\": \"Breakfast\"\r\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "9240e89c-b488-4553-ac6c-2b89c3a92e43",
+              "type": "text/javascript",
+              "exec": [
+                "pm.test(\"Status code 200\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\nconst body = pm.response.json();\r\n\r\npm.test(\"bookingid এসেছে\", () => {\r\n  pm.expect(body.bookingid).to.be.a(\"number\");\r\n  pm.environment.set(\"bookingId\", body.bookingid);\r\n});\r\n\r\npm.test(\"ডেটা ঠিক আছে\", () => {\r\n  pm.expect(body.booking.firstname).to.eql(\"Rahul\");\r\n  pm.expect(body.booking.lastname).to.eql(\"Das\");\r\n  pm.expect(body.booking.totalprice).to.eql(500);\r\n  pm.expect(body.booking.bookingdates.checkin).to.eql(\"2026-12-01\");\r\n});"
+              ],
+              "_lastExecutionId": "5d77c7bc-fafe-4931-b53b-5f0be9a3646d"
+            }
+          }
+        ]
+      },
+      {
+        "id": "738ec893-9c82-4b26-9945-988ccc958966",
+        "name": "Get Booking",
+        "request": {
+          "url": {
+            "path": [
+              "booking",
+              "{{bookingId}}"
+            ],
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            }
+          ],
+          "method": "GET"
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "179de5aa-3616-4aa7-919a-6a0ecc29262f",
+              "type": "text/javascript",
+              "exec": [
+                "pm.test(\"Status code 200\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"সঠিক booking ফিরেছে\", () => {\r\n  const body = pm.response.json();\r\n  pm.expect(body.firstname).to.eql(\"Rahul\");\r\n  pm.expect(body.totalprice).to.eql(500);\r\n});"
+              ],
+              "_lastExecutionId": "6dcc47e2-5304-4171-ab63-37a24b3204d9"
+            }
+          }
+        ]
+      },
+      {
+        "id": "23c1a848-26be-4539-ba8a-cb47ddb91ad9",
+        "name": "Update Booking",
+        "request": {
+          "url": {
+            "path": [
+              "booking",
+              "{{bookingId}}"
+            ],
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Cookie",
+              "value": "token={{token}}"
+            }
+          ],
+          "method": "PUT",
+          "body": {
+            "mode": "raw",
+            "raw": "{\r\n  \"firstname\": \"Rahul\",\r\n  \"lastname\": \"Sharma\",\r\n  \"totalprice\": 700,\r\n  \"depositpaid\": true,\r\n  \"bookingdates\": {\r\n    \"checkin\": \"2026-12-01\",\r\n    \"checkout\": \"2026-12-05\"\r\n  },\r\n  \"additionalneeds\": \"Dinner\"\r\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "5c661c27-8560-4dd5-84c3-21f06dd60df1",
+              "type": "text/javascript",
+              "exec": [
+                "pm.test(\"Status code 200\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"আপডেট হয়েছে\", () => {\r\n  const body = pm.response.json();\r\n  pm.expect(body.lastname).to.eql(\"Sharma\");\r\n  pm.expect(body.totalprice).to.eql(700);\r\n  pm.expect(body.additionalneeds).to.eql(\"Dinner\");\r\n});"
+              ],
+              "_lastExecutionId": "886b7768-96f4-4697-911b-0494b8ecd2df"
+            }
+          }
+        ]
+      },
+      {
+        "id": "3deea756-df20-4de1-a971-f889a16ce5a4",
+        "name": "Delete Booking",
+        "request": {
+          "url": {
+            "path": [
+              "booking",
+              "{{bookingId}}"
+            ],
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "query": [
+              {
+                "key": "",
+                "value": ""
+              }
+            ],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Cookie",
+              "value": "token={{token}}"
+            }
+          ],
+          "method": "DELETE"
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "22e43d19-efe0-4ac4-9d1c-0c132eca6520",
+              "type": "text/javascript",
+              "exec": [
+                "pm.test(\"Status code 201 (Created)\", () => {\r\n  pm.response.to.have.status(201);\r\n});"
+              ],
+              "_lastExecutionId": "0428dbfe-fb98-43cb-a6cf-dedc118882e3"
+            }
+          }
+        ]
+      },
+      {
+        "id": "3a5dea2b-a9f8-495f-8739-1b3e365c4efa",
+        "name": "Get Deleted Booking (verify)",
+        "request": {
+          "url": {
+            "path": [
+              "booking",
+              "{{bookingId}}"
+            ],
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "method": "GET"
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "83dd3ecd-0cc6-4d13-b846-baee725b054c",
+              "type": "text/javascript",
+              "exec": [
+                "pm.test(\"Status code 404 (আর নেই)\", () => {\r\n  pm.response.to.have.status(404);\r\n});"
+              ],
+              "_lastExecutionId": "50d0a4eb-ea08-469e-834f-fa3ca63ea439"
+            }
+          }
+        ]
+      }
+    ],
+    "event": [],
+    "variable": [],
+    "info": {
+      "_postman_id": "e9f2fd37-b766-42eb-b014-51ba33ba5060",
+      "name": "Restful Booker API Tests",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+      "description": {
+        "content": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+        "type": "text/plain"
+      }
+    }
+  },
+  "environment": {
+    "_": {
+      "postman_variable_scope": "environment"
+    },
+    "id": "f45b1d4f-9b00-42b8-a285-f4acf2fbd2a0",
+    "name": "Staging",
+    "values": [
+      {
+        "type": "any",
+        "value": "https://restful-booker.herokuapp.com",
+        "key": "baseUrl"
+      },
+      {
+        "type": "any",
+        "value": "admin",
+        "key": "username"
+      },
+      {
+        "type": "any",
+        "value": "password123",
+        "key": "password"
+      },
+      {
+        "type": "any",
+        "value": "07537af707facc6",
+        "key": "token"
+      },
+      {
+        "type": "any",
+        "value": 1933,
+        "key": "bookingId"
+      }
+    ]
+  },
+  "globals": {
+    "id": "c156a3ab-6d09-45ca-b394-ff98ae697858",
+    "values": []
+  },
+  "run": {
+    "stats": {
+      "iterations": {
+        "total": 1,
+        "pending": 0,
+        "failed": 0
+      },
+      "items": {
+        "total": 8,
+        "pending": 0,
+        "failed": 0
+      },
+      "scripts": {
+        "total": 8,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequests": {
+        "total": 8,
+        "pending": 0,
+        "failed": 0
+      },
+      "requests": {
+        "total": 8,
+        "pending": 0,
+        "failed": 0
+      },
+      "tests": {
+        "total": 8,
+        "pending": 0,
+        "failed": 0
+      },
+      "assertions": {
+        "total": 14,
+        "pending": 0,
+        "failed": 1
+      },
+      "testScripts": {
+        "total": 8,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequestScripts": {
+        "total": 0,
+        "pending": 0,
+        "failed": 0
+      }
+    },
+    "timings": {
+      "responseAverage": 470.5,
+      "responseMin": 235,
+      "responseMax": 2113,
+      "responseSd": 620.8073372633413,
+      "dnsAverage": 0,
+      "dnsMin": 0,
+      "dnsMax": 0,
+      "dnsSd": 0,
+      "firstByteAverage": 0,
+      "firstByteMin": 0,
+      "firstByteMax": 0,
+      "firstByteSd": 0,
+      "started": 1794914061947,
+      "completed": 1794914066542
+    },
+    "executions": [
+      {
+        "cursor": {
+          "position": 0,
+          "iteration": 0,
+          "length": 8,
+          "cycles": 1,
+          "empty": false,
+          "eof": false,
+          "bof": true,
+          "cr": false,
+          "ref": "edead6e8-1195-4eb6-be1c-165a0a66855f",
+          "httpRequestId": "aa01c76f-50af-46d6-be53-58f00cecffd2"
+        },
+        "item": {
+          "id": "62ef19ea-53ed-468f-8185-3bb8049f4b51",
+          "name": "Ping",
+          "request": {
+            "description": {
+              "content": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ping"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "3ae73f70-353e-4e48-b92f-65a35e2cc6de",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code 201\", () => {\n  pm.response.to.have.status(201);\n});\n\npm.test(\"Response time 2 সেকেন্ডের কম\", () => {\n  pm.expect(pm.response.responseTime).to.be.below(2000);\n});"
+                ],
+                "_lastExecutionId": "7170a54e-7b87-48f0-8aa1-e8fdd536c8bb"
+              }
+            }
+          ]
+        },
+        "request": {
+          "description": {
+            "content": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data.",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "https",
+            "path": [
+              "ping"
+            ],
+            "host": [
+              "restful-booker",
+              "herokuapp",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.39.1",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "8945400f-d84b-4678-a6ca-474a6484afa4",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "restful-booker.herokuapp.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "GET"
+        },
+        "response": {
+          "id": "ca50d34d-dfd5-42d3-b2a1-6237878a90db",
+          "status": "Created",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Length",
+              "value": "7"
+            },
+            {
+              "key": "Content-Type",
+              "value": "text/plain; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 17 Nov 2026 11:14:23 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"7-rM9AyJuqT6iOan/xHh+AW+7K/T8\""
+            },
+            {
+              "key": "Nel",
+              "value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+            },
+            {
+              "key": "Report-To",
+              "value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=doKwj%2Bp3aIO41vy9kYXiEEWUflfTkfqJOl4R5Rwvtlk%3D\\u0026sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add\\u0026ts=1794914063\"}],\"max_age\":3600}"
+            },
+            {
+              "key": "Reporting-Endpoints",
+              "value": "heroku-nel=\"https://nel.heroku.com/reports?s=doKwj%2Bp3aIO41vy9kYXiEEWUflfTkfqJOl4R5Rwvtlk%3D&sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add&ts=1794914063\""
+            },
+            {
+              "key": "Server",
+              "value": "Heroku"
+            },
+            {
+              "key": "Via",
+              "value": "1.1 heroku-router"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              67,
+              114,
+              101,
+              97,
+              116,
+              101,
+              100
+            ]
+          },
+          "cookie": [],
+          "responseTime": 2113,
+          "responseSize": 7
+        },
+        "id": "62ef19ea-53ed-468f-8185-3bb8049f4b51",
+        "assertions": [
+          {
+            "assertion": "Status code 201",
+            "skipped": false
+          },
+          {
+            "assertion": "Response time 2 সেকেন্ডের কম",
+            "skipped": false,
+            "error": {
+              "name": "AssertionError",
+              "index": 1,
+              "test": "Response time 2 সেকেন্ডের কম",
+              "message": "expected 2113 to be below 2000",
+              "stack": "AssertionError: expected 2113 to be below 2000\n   at Object.eval sandbox-script.js:2:1)"
+            }
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "230056c8-8f78-45e1-9004-e3ef57f2526f",
+          "length": 8,
+          "cycles": 1,
+          "position": 1,
+          "iteration": 0,
+          "httpRequestId": "830a2955-87a4-49e6-b1ad-84865de850b5"
+        },
+        "item": {
+          "id": "67a9ce75-0e63-4cfb-a796-87764e4059c7",
+          "name": "Create Token",
+          "request": {
+            "description": {
+              "content": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "auth"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "732b9a17-b283-4130-9893-6ee0eb6af20d",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code 200\", () => {\n  pm.response.to.have.status(200);\n});\n\npm.test(\"Token এসেছে\", () => {\n  const body = pm.response.json();\n  pm.expect(body.token).to.be.a(\"string\").and.not.empty;\n  pm.environment.set(\"token\", body.token);   // পরের request এর জন্য সেভ\n});"
+                ],
+                "_lastExecutionId": "d5a699bb-0afb-4dc1-954f-f1ffd55e9bb2"
+              }
+            }
+          ]
+        },
+        "request": {
+          "description": {
+            "content": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code.",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "https",
+            "path": [
+              "auth"
+            ],
+            "host": [
+              "restful-booker",
+              "herokuapp",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "system": true
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.39.1",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "70ae0a7e-bf34-43df-85b2-ae1a39a62702",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "restful-booker.herokuapp.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": "54",
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "4ec390b4-643f-4ae8-ac67-6237455cdba4",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Length",
+              "value": "27"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 17 Nov 2026 11:14:24 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"1b-Y5cBJPEErPCEys5u5JkP8PuC4Vs\""
+            },
+            {
+              "key": "Nel",
+              "value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+            },
+            {
+              "key": "Report-To",
+              "value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=M3mB1xHYKf%2FTMhB22wrOgGZF5c32FpPfXd729XpEiug%3D\\u0026sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add\\u0026ts=1794914064\"}],\"max_age\":3600}"
+            },
+            {
+              "key": "Reporting-Endpoints",
+              "value": "heroku-nel=\"https://nel.heroku.com/reports?s=M3mB1xHYKf%2FTMhB22wrOgGZF5c32FpPfXd729XpEiug%3D&sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add&ts=1794914064\""
+            },
+            {
+              "key": "Server",
+              "value": "Heroku"
+            },
+            {
+              "key": "Via",
+              "value": "1.1 heroku-router"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              116,
+              111,
+              107,
+              101,
+              110,
+              34,
+              58,
+              34,
+              48,
+              55,
+              53,
+              51,
+              55,
+              97,
+              102,
+              55,
+              48,
+              55,
+              102,
+              97,
+              99,
+              99,
+              54,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 236,
+          "responseSize": 27
+        },
+        "id": "67a9ce75-0e63-4cfb-a796-87764e4059c7",
+        "assertions": [
+          {
+            "assertion": "Status code 200",
+            "skipped": false
+          },
+          {
+            "assertion": "Token এসেছে",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "11e340c8-e867-4206-a1a6-4eabc4126199",
+          "length": 8,
+          "cycles": 1,
+          "position": 2,
+          "iteration": 0,
+          "httpRequestId": "859c2aca-14b2-470b-9147-64b820dec3e3"
+        },
+        "item": {
+          "id": "0270bb06-7693-4592-9909-ed9393b1151a",
+          "name": "Login with Wrong Password",
+          "request": {
+            "url": {
+              "path": [
+                "auth"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"wrongpass\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "99048ccf-095f-49d9-bee4-226cf7271468",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"ভুল login এ token আসেনি\", () => {\r\n  const body = pm.response.json();\r\n  pm.expect(body.token).to.be.undefined;\r\n  pm.expect(body.reason).to.eql(\"Bad credentials\");\r\n});"
+                ],
+                "_lastExecutionId": "e5213d1b-2d0c-4c83-a5ce-f3ed2f497f02"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "auth"
+            ],
+            "host": [
+              "restful-booker",
+              "herokuapp",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "system": true
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.39.1",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "1d7ad4c4-603d-463e-b2a5-fc5980211ae1",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "restful-booker.herokuapp.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": "55",
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"wrongpass\"\r\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "21f87ca6-2ec7-4b05-b68b-99f52ad8049c",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Length",
+              "value": "28"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 17 Nov 2026 11:14:24 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"1c-J3EiwfZwVQjKTKvpvazUfTni8fI\""
+            },
+            {
+              "key": "Nel",
+              "value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+            },
+            {
+              "key": "Report-To",
+              "value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=M3mB1xHYKf%2FTMhB22wrOgGZF5c32FpPfXd729XpEiug%3D\\u0026sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add\\u0026ts=1794914064\"}],\"max_age\":3600}"
+            },
+            {
+              "key": "Reporting-Endpoints",
+              "value": "heroku-nel=\"https://nel.heroku.com/reports?s=M3mB1xHYKf%2FTMhB22wrOgGZF5c32FpPfXd729XpEiug%3D&sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add&ts=1794914064\""
+            },
+            {
+              "key": "Server",
+              "value": "Heroku"
+            },
+            {
+              "key": "Via",
+              "value": "1.1 heroku-router"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              114,
+              101,
+              97,
+              115,
+              111,
+              110,
+              34,
+              58,
+              34,
+              66,
+              97,
+              100,
+              32,
+              99,
+              114,
+              101,
+              100,
+              101,
+              110,
+              116,
+              105,
+              97,
+              108,
+              115,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 236,
+          "responseSize": 28
+        },
+        "id": "0270bb06-7693-4592-9909-ed9393b1151a",
+        "assertions": [
+          {
+            "assertion": "ভুল login এ token আসেনি",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "b74995f3-b809-4d1f-9de5-ec242edfef8a",
+          "length": 8,
+          "cycles": 1,
+          "position": 3,
+          "iteration": 0,
+          "httpRequestId": "18f0b605-d306-4cd7-9b93-c9121ff728b7"
+        },
+        "item": {
+          "id": "9967ac70-2b63-4f23-b09e-8c2b798af141",
+          "name": "Create Booking",
+          "request": {
+            "url": {
+              "path": [
+                "booking"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstname\": \"Rahul\",\r\n  \"lastname\": \"Das\",\r\n  \"totalprice\": 500,\r\n  \"depositpaid\": true,\r\n  \"bookingdates\": {\r\n    \"checkin\": \"2026-12-01\",\r\n    \"checkout\": \"2026-12-05\"\r\n  },\r\n  \"additionalneeds\": \"Breakfast\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "9240e89c-b488-4553-ac6c-2b89c3a92e43",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code 200\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\nconst body = pm.response.json();\r\n\r\npm.test(\"bookingid এসেছে\", () => {\r\n  pm.expect(body.bookingid).to.be.a(\"number\");\r\n  pm.environment.set(\"bookingId\", body.bookingid);\r\n});\r\n\r\npm.test(\"ডেটা ঠিক আছে\", () => {\r\n  pm.expect(body.booking.firstname).to.eql(\"Rahul\");\r\n  pm.expect(body.booking.lastname).to.eql(\"Das\");\r\n  pm.expect(body.booking.totalprice).to.eql(500);\r\n  pm.expect(body.booking.bookingdates.checkin).to.eql(\"2026-12-01\");\r\n});"
+                ],
+                "_lastExecutionId": "5d77c7bc-fafe-4931-b53b-5f0be9a3646d"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "booking"
+            ],
+            "host": [
+              "restful-booker",
+              "herokuapp",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "system": true
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.39.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "8ca2d4ee-dc05-4592-a80e-f96b8e52ffe6",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "restful-booker.herokuapp.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": "218",
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\r\n  \"firstname\": \"Rahul\",\r\n  \"lastname\": \"Das\",\r\n  \"totalprice\": 500,\r\n  \"depositpaid\": true,\r\n  \"bookingdates\": {\r\n    \"checkin\": \"2026-12-01\",\r\n    \"checkout\": \"2026-12-05\"\r\n  },\r\n  \"additionalneeds\": \"Breakfast\"\r\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "e52bbbac-3332-4dc2-bf42-5c8feefbcfe2",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Length",
+              "value": "197"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 17 Nov 2026 11:14:25 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"c5-yNHoR1+0jKTu2J99OjSpTwi1mYg\""
+            },
+            {
+              "key": "Nel",
+              "value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+            },
+            {
+              "key": "Report-To",
+              "value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=z9qEVtgX%2BNvXqzb8kavUw8XnaHfIw59JJCp1BDMjYyM%3D\\u0026sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add\\u0026ts=1794914065\"}],\"max_age\":3600}"
+            },
+            {
+              "key": "Reporting-Endpoints",
+              "value": "heroku-nel=\"https://nel.heroku.com/reports?s=z9qEVtgX%2BNvXqzb8kavUw8XnaHfIw59JJCp1BDMjYyM%3D&sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add&ts=1794914065\""
+            },
+            {
+              "key": "Server",
+              "value": "Heroku"
+            },
+            {
+              "key": "Via",
+              "value": "1.1 heroku-router"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              98,
+              111,
+              111,
+              107,
+              105,
+              110,
+              103,
+              105,
+              100,
+              34,
+              58,
+              49,
+              57,
+              51,
+              51,
+              44,
+              34,
+              98,
+              111,
+              111,
+              107,
+              105,
+              110,
+              103,
+              34,
+              58,
+              123,
+              34,
+              102,
+              105,
+              114,
+              115,
+              116,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              82,
+              97,
+              104,
+              117,
+              108,
+              34,
+              44,
+              34,
+              108,
+              97,
+              115,
+              116,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              68,
+              97,
+              115,
+              34,
+              44,
+              34,
+              116,
+              111,
+              116,
+              97,
+              108,
+              112,
+              114,
+              105,
+              99,
+              101,
+              34,
+              58,
+              53,
+              48,
+              48,
+              44,
+              34,
+              100,
+              101,
+              112,
+              111,
+              115,
+              105,
+              116,
+              112,
+              97,
+              105,
+              100,
+              34,
+              58,
+              116,
+              114,
+              117,
+              101,
+              44,
+              34,
+              98,
+              111,
+              111,
+              107,
+              105,
+              110,
+              103,
+              100,
+              97,
+              116,
+              101,
+              115,
+              34,
+              58,
+              123,
+              34,
+              99,
+              104,
+              101,
+              99,
+              107,
+              105,
+              110,
+              34,
+              58,
+              34,
+              50,
+              48,
+              50,
+              54,
+              45,
+              49,
+              50,
+              45,
+              48,
+              49,
+              34,
+              44,
+              34,
+              99,
+              104,
+              101,
+              99,
+              107,
+              111,
+              117,
+              116,
+              34,
+              58,
+              34,
+              50,
+              48,
+              50,
+              54,
+              45,
+              49,
+              50,
+              45,
+              48,
+              53,
+              34,
+              125,
+              44,
+              34,
+              97,
+              100,
+              100,
+              105,
+              116,
+              105,
+              111,
+              110,
+              97,
+              108,
+              110,
+              101,
+              101,
+              100,
+              115,
+              34,
+              58,
+              34,
+              66,
+              114,
+              101,
+              97,
+              107,
+              102,
+              97,
+              115,
+              116,
+              34,
+              125,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 236,
+          "responseSize": 197
+        },
+        "id": "9967ac70-2b63-4f23-b09e-8c2b798af141",
+        "assertions": [
+          {
+            "assertion": "Status code 200",
+            "skipped": false
+          },
+          {
+            "assertion": "bookingid এসেছে",
+            "skipped": false
+          },
+          {
+            "assertion": "ডেটা ঠিক আছে",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "8bde20a7-5567-4d31-8d09-a6d2519dca82",
+          "length": 8,
+          "cycles": 1,
+          "position": 4,
+          "iteration": 0,
+          "httpRequestId": "ba5056d8-49da-49e2-b91d-ba0e7c93d285"
+        },
+        "item": {
+          "id": "738ec893-9c82-4b26-9945-988ccc958966",
+          "name": "Get Booking",
+          "request": {
+            "url": {
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "179de5aa-3616-4aa7-919a-6a0ecc29262f",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code 200\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"সঠিক booking ফিরেছে\", () => {\r\n  const body = pm.response.json();\r\n  pm.expect(body.firstname).to.eql(\"Rahul\");\r\n  pm.expect(body.totalprice).to.eql(500);\r\n});"
+                ],
+                "_lastExecutionId": "6dcc47e2-5304-4171-ab63-37a24b3204d9"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "booking",
+              "1933"
+            ],
+            "host": [
+              "restful-booker",
+              "herokuapp",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.39.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "01168ac1-5667-4351-b897-41095f62158b",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "restful-booker.herokuapp.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "GET"
+        },
+        "response": {
+          "id": "da816b18-3114-40fe-bfa2-7e5070570cb2",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Length",
+              "value": "168"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 17 Nov 2026 11:14:25 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"a8-jFLnRbR4ynrcrg9UEDuk8kHqCXA\""
+            },
+            {
+              "key": "Nel",
+              "value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+            },
+            {
+              "key": "Report-To",
+              "value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=z9qEVtgX%2BNvXqzb8kavUw8XnaHfIw59JJCp1BDMjYyM%3D\\u0026sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add\\u0026ts=1794914065\"}],\"max_age\":3600}"
+            },
+            {
+              "key": "Reporting-Endpoints",
+              "value": "heroku-nel=\"https://nel.heroku.com/reports?s=z9qEVtgX%2BNvXqzb8kavUw8XnaHfIw59JJCp1BDMjYyM%3D&sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add&ts=1794914065\""
+            },
+            {
+              "key": "Server",
+              "value": "Heroku"
+            },
+            {
+              "key": "Via",
+              "value": "1.1 heroku-router"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              102,
+              105,
+              114,
+              115,
+              116,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              82,
+              97,
+              104,
+              117,
+              108,
+              34,
+              44,
+              34,
+              108,
+              97,
+              115,
+              116,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              68,
+              97,
+              115,
+              34,
+              44,
+              34,
+              116,
+              111,
+              116,
+              97,
+              108,
+              112,
+              114,
+              105,
+              99,
+              101,
+              34,
+              58,
+              53,
+              48,
+              48,
+              44,
+              34,
+              100,
+              101,
+              112,
+              111,
+              115,
+              105,
+              116,
+              112,
+              97,
+              105,
+              100,
+              34,
+              58,
+              116,
+              114,
+              117,
+              101,
+              44,
+              34,
+              98,
+              111,
+              111,
+              107,
+              105,
+              110,
+              103,
+              100,
+              97,
+              116,
+              101,
+              115,
+              34,
+              58,
+              123,
+              34,
+              99,
+              104,
+              101,
+              99,
+              107,
+              105,
+              110,
+              34,
+              58,
+              34,
+              50,
+              48,
+              50,
+              54,
+              45,
+              49,
+              50,
+              45,
+              48,
+              49,
+              34,
+              44,
+              34,
+              99,
+              104,
+              101,
+              99,
+              107,
+              111,
+              117,
+              116,
+              34,
+              58,
+              34,
+              50,
+              48,
+              50,
+              54,
+              45,
+              49,
+              50,
+              45,
+              48,
+              53,
+              34,
+              125,
+              44,
+              34,
+              97,
+              100,
+              100,
+              105,
+              116,
+              105,
+              111,
+              110,
+              97,
+              108,
+              110,
+              101,
+              101,
+              100,
+              115,
+              34,
+              58,
+              34,
+              66,
+              114,
+              101,
+              97,
+              107,
+              102,
+              97,
+              115,
+              116,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 235,
+          "responseSize": 168
+        },
+        "id": "738ec893-9c82-4b26-9945-988ccc958966",
+        "assertions": [
+          {
+            "assertion": "Status code 200",
+            "skipped": false
+          },
+          {
+            "assertion": "সঠিক booking ফিরেছে",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "ed2974fa-d796-48f9-92ac-53c3a1ae1324",
+          "length": 8,
+          "cycles": 1,
+          "position": 5,
+          "iteration": 0,
+          "httpRequestId": "1f4572af-1da9-4a8c-8864-88a1e6606891"
+        },
+        "item": {
+          "id": "23c1a848-26be-4539-ba8a-cb47ddb91ad9",
+          "name": "Update Booking",
+          "request": {
+            "url": {
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "token={{token}}"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstname\": \"Rahul\",\r\n  \"lastname\": \"Sharma\",\r\n  \"totalprice\": 700,\r\n  \"depositpaid\": true,\r\n  \"bookingdates\": {\r\n    \"checkin\": \"2026-12-01\",\r\n    \"checkout\": \"2026-12-05\"\r\n  },\r\n  \"additionalneeds\": \"Dinner\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "5c661c27-8560-4dd5-84c3-21f06dd60df1",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code 200\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"আপডেট হয়েছে\", () => {\r\n  const body = pm.response.json();\r\n  pm.expect(body.lastname).to.eql(\"Sharma\");\r\n  pm.expect(body.totalprice).to.eql(700);\r\n  pm.expect(body.additionalneeds).to.eql(\"Dinner\");\r\n});"
+                ],
+                "_lastExecutionId": "886b7768-96f4-4697-911b-0494b8ecd2df"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "booking",
+              "1933"
+            ],
+            "host": [
+              "restful-booker",
+              "herokuapp",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Cookie",
+              "value": "token=07537af707facc6",
+              "system": true
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "system": true
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.39.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "f48bf2db-7833-4572-8a0e-5d56f1f064f5",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "restful-booker.herokuapp.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": "218",
+              "system": true
+            }
+          ],
+          "method": "PUT",
+          "body": {
+            "mode": "raw",
+            "raw": "{\r\n  \"firstname\": \"Rahul\",\r\n  \"lastname\": \"Sharma\",\r\n  \"totalprice\": 700,\r\n  \"depositpaid\": true,\r\n  \"bookingdates\": {\r\n    \"checkin\": \"2026-12-01\",\r\n    \"checkout\": \"2026-12-05\"\r\n  },\r\n  \"additionalneeds\": \"Dinner\"\r\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "ba20dcad-9fe2-4ddc-975a-8afb355f9fd4",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Length",
+              "value": "168"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 17 Nov 2026 11:14:25 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"a8-g6JJP/HfdgvLrqPhtkwZUzmhf2Q\""
+            },
+            {
+              "key": "Nel",
+              "value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+            },
+            {
+              "key": "Report-To",
+              "value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=z9qEVtgX%2BNvXqzb8kavUw8XnaHfIw59JJCp1BDMjYyM%3D\\u0026sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add\\u0026ts=1794914065\"}],\"max_age\":3600}"
+            },
+            {
+              "key": "Reporting-Endpoints",
+              "value": "heroku-nel=\"https://nel.heroku.com/reports?s=z9qEVtgX%2BNvXqzb8kavUw8XnaHfIw59JJCp1BDMjYyM%3D&sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add&ts=1794914065\""
+            },
+            {
+              "key": "Server",
+              "value": "Heroku"
+            },
+            {
+              "key": "Via",
+              "value": "1.1 heroku-router"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              102,
+              105,
+              114,
+              115,
+              116,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              82,
+              97,
+              104,
+              117,
+              108,
+              34,
+              44,
+              34,
+              108,
+              97,
+              115,
+              116,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              83,
+              104,
+              97,
+              114,
+              109,
+              97,
+              34,
+              44,
+              34,
+              116,
+              111,
+              116,
+              97,
+              108,
+              112,
+              114,
+              105,
+              99,
+              101,
+              34,
+              58,
+              55,
+              48,
+              48,
+              44,
+              34,
+              100,
+              101,
+              112,
+              111,
+              115,
+              105,
+              116,
+              112,
+              97,
+              105,
+              100,
+              34,
+              58,
+              116,
+              114,
+              117,
+              101,
+              44,
+              34,
+              98,
+              111,
+              111,
+              107,
+              105,
+              110,
+              103,
+              100,
+              97,
+              116,
+              101,
+              115,
+              34,
+              58,
+              123,
+              34,
+              99,
+              104,
+              101,
+              99,
+              107,
+              105,
+              110,
+              34,
+              58,
+              34,
+              50,
+              48,
+              50,
+              54,
+              45,
+              49,
+              50,
+              45,
+              48,
+              49,
+              34,
+              44,
+              34,
+              99,
+              104,
+              101,
+              99,
+              107,
+              111,
+              117,
+              116,
+              34,
+              58,
+              34,
+              50,
+              48,
+              50,
+              54,
+              45,
+              49,
+              50,
+              45,
+              48,
+              53,
+              34,
+              125,
+              44,
+              34,
+              97,
+              100,
+              100,
+              105,
+              116,
+              105,
+              111,
+              110,
+              97,
+              108,
+              110,
+              101,
+              101,
+              100,
+              115,
+              34,
+              58,
+              34,
+              68,
+              105,
+              110,
+              110,
+              101,
+              114,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 238,
+          "responseSize": 168
+        },
+        "id": "23c1a848-26be-4539-ba8a-cb47ddb91ad9",
+        "assertions": [
+          {
+            "assertion": "Status code 200",
+            "skipped": false
+          },
+          {
+            "assertion": "আপডেট হয়েছে",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "fa64ad50-77a7-47c9-82e4-49c9e337b897",
+          "length": 8,
+          "cycles": 1,
+          "position": 6,
+          "iteration": 0,
+          "httpRequestId": "6304a454-4ffb-4589-a9c1-2c19b3dbb9df"
+        },
+        "item": {
+          "id": "3deea756-df20-4de1-a971-f889a16ce5a4",
+          "name": "Delete Booking",
+          "request": {
+            "url": {
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": ""
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "token={{token}}"
+              }
+            ],
+            "method": "DELETE"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "22e43d19-efe0-4ac4-9d1c-0c132eca6520",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code 201 (Created)\", () => {\r\n  pm.response.to.have.status(201);\r\n});"
+                ],
+                "_lastExecutionId": "0428dbfe-fb98-43cb-a6cf-dedc118882e3"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "booking",
+              "1933"
+            ],
+            "host": [
+              "restful-booker",
+              "herokuapp",
+              "com"
+            ],
+            "query": [
+              {
+                "key": "",
+                "value": ""
+              }
+            ],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Cookie",
+              "value": "token=07537af707facc6",
+              "system": true
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.39.1",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "b9d24772-017a-403d-ba26-e84a20db2db7",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "restful-booker.herokuapp.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "DELETE"
+        },
+        "response": {
+          "id": "fd322426-9533-414a-aad5-5b1a63588d05",
+          "status": "Created",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Length",
+              "value": "7"
+            },
+            {
+              "key": "Content-Type",
+              "value": "text/plain; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 17 Nov 2026 11:14:26 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"7-rM9AyJuqT6iOan/xHh+AW+7K/T8\""
+            },
+            {
+              "key": "Nel",
+              "value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+            },
+            {
+              "key": "Report-To",
+              "value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=RohEDr4lj6xqNs%2BZgO75BSizPMjZ4H%2B6%2FGo4l35dQj4%3D\\u0026sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add\\u0026ts=1794914066\"}],\"max_age\":3600}"
+            },
+            {
+              "key": "Reporting-Endpoints",
+              "value": "heroku-nel=\"https://nel.heroku.com/reports?s=RohEDr4lj6xqNs%2BZgO75BSizPMjZ4H%2B6%2FGo4l35dQj4%3D&sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add&ts=1794914066\""
+            },
+            {
+              "key": "Server",
+              "value": "Heroku"
+            },
+            {
+              "key": "Via",
+              "value": "1.1 heroku-router"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              67,
+              114,
+              101,
+              97,
+              116,
+              101,
+              100
+            ]
+          },
+          "cookie": [],
+          "responseTime": 235,
+          "responseSize": 7
+        },
+        "id": "3deea756-df20-4de1-a971-f889a16ce5a4",
+        "assertions": [
+          {
+            "assertion": "Status code 201 (Created)",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "81ee8daa-7892-4dfe-a8c7-34c6fbf1f405",
+          "length": 8,
+          "cycles": 1,
+          "position": 7,
+          "iteration": 0,
+          "httpRequestId": "4d7d0b08-3943-4cc2-b04d-34c591269aaa"
+        },
+        "item": {
+          "id": "3a5dea2b-a9f8-495f-8739-1b3e365c4efa",
+          "name": "Get Deleted Booking (verify)",
+          "request": {
+            "url": {
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "83dd3ecd-0cc6-4d13-b846-baee725b054c",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code 404 (আর নেই)\", () => {\r\n  pm.response.to.have.status(404);\r\n});"
+                ],
+                "_lastExecutionId": "50d0a4eb-ea08-469e-834f-fa3ca63ea439"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "booking",
+              "1933"
+            ],
+            "host": [
+              "restful-booker",
+              "herokuapp",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.39.1",
+              "system": true
+            },
+            {
+              "key": "Accept",
+              "value": "*/*",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "974c9656-73c6-485d-a334-58d9e5e4b16a",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "restful-booker.herokuapp.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "GET"
+        },
+        "response": {
+          "id": "b874ee13-b0db-4e63-b1c0-21bc87f8d417",
+          "status": "Not Found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Length",
+              "value": "9"
+            },
+            {
+              "key": "Content-Type",
+              "value": "text/plain; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 17 Nov 2026 11:14:26 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"9-0gXL1ngzMqISxa6S1zx3F4wtLyg\""
+            },
+            {
+              "key": "Nel",
+              "value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+            },
+            {
+              "key": "Report-To",
+              "value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=RohEDr4lj6xqNs%2BZgO75BSizPMjZ4H%2B6%2FGo4l35dQj4%3D\\u0026sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add\\u0026ts=1794914066\"}],\"max_age\":3600}"
+            },
+            {
+              "key": "Reporting-Endpoints",
+              "value": "heroku-nel=\"https://nel.heroku.com/reports?s=RohEDr4lj6xqNs%2BZgO75BSizPMjZ4H%2B6%2FGo4l35dQj4%3D&sid=c46efe9b-d3d2-4a0c-8c76-bfafa16c5add&ts=1794914066\""
+            },
+            {
+              "key": "Server",
+              "value": "Heroku"
+            },
+            {
+              "key": "Via",
+              "value": "1.1 heroku-router"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              78,
+              111,
+              116,
+              32,
+              70,
+              111,
+              117,
+              110,
+              100
+            ]
+          },
+          "cookie": [],
+          "responseTime": 235,
+          "responseSize": 9
+        },
+        "id": "3a5dea2b-a9f8-495f-8739-1b3e365c4efa",
+        "assertions": [
+          {
+            "assertion": "Status code 404 (আর নেই)",
+            "skipped": false
+          }
+        ]
+      }
+    ],
+    "transfers": {
+      "responseTotal": 611
+    },
+    "failures": [
+      {
+        "error": {
+          "name": "AssertionError",
+          "index": 1,
+          "test": "Response time 2 সেকেন্ডের কম",
+          "message": "expected 2113 to be below 2000",
+          "stack": "AssertionError: expected 2113 to be below 2000\n   at Object.eval sandbox-script.js:2:1)",
+          "checksum": "39ea9d570c82f38a9366946989ff15d9",
+          "id": "30e6b0ce-dc5f-4808-84fc-641e276a071f",
+          "timestamp": 1794914064172,
+          "stacktrace": [
+            {
+              "fileName": "sandbox-script.js",
+              "lineNumber": 2,
+              "functionName": "Object.eval",
+              "typeName": "Object",
+              "methodName": "eval",
+              "columnNumber": 1,
+              "native": false
+            }
+          ]
+        },
+        "at": "assertion:1 in test-script",
+        "source": {
+          "id": "62ef19ea-53ed-468f-8185-3bb8049f4b51",
+          "name": "Ping",
+          "request": {
+            "description": {
+              "content": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ping"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "3ae73f70-353e-4e48-b92f-65a35e2cc6de",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code 201\", () => {\n  pm.response.to.have.status(201);\n});\n\npm.test(\"Response time 2 সেকেন্ডের কম\", () => {\n  pm.expect(pm.response.responseTime).to.be.below(2000);\n});"
+                ],
+                "_lastExecutionId": "7170a54e-7b87-48f0-8aa1-e8fdd536c8bb"
+              }
+            }
+          ]
+        },
+        "parent": {
+          "_": {
+            "postman_id": "e9f2fd37-b766-42eb-b014-51ba33ba5060",
+            "exporter_id": "60251870",
+            "collection_link": "https://go.postman.co/collection/60251870-e9f2fd37-b766-42eb-b014-51ba33ba5060?source=collection_link"
+          },
+          "item": [
+            {
+              "id": "62ef19ea-53ed-468f-8185-3bb8049f4b51",
+              "name": "Ping",
+              "request": {
+                "description": {
+                  "content": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data.",
+                  "type": "text/plain"
+                },
+                "url": {
+                  "path": [
+                    "ping"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "3ae73f70-353e-4e48-b92f-65a35e2cc6de",
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code 201\", () => {\n  pm.response.to.have.status(201);\n});\n\npm.test(\"Response time 2 সেকেন্ডের কম\", () => {\n  pm.expect(pm.response.responseTime).to.be.below(2000);\n});"
+                    ],
+                    "_lastExecutionId": "7170a54e-7b87-48f0-8aa1-e8fdd536c8bb"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "67a9ce75-0e63-4cfb-a796-87764e4059c7",
+              "name": "Create Token",
+              "request": {
+                "description": {
+                  "content": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code.",
+                  "type": "text/plain"
+                },
+                "url": {
+                  "path": [
+                    "auth"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "732b9a17-b283-4130-9893-6ee0eb6af20d",
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code 200\", () => {\n  pm.response.to.have.status(200);\n});\n\npm.test(\"Token এসেছে\", () => {\n  const body = pm.response.json();\n  pm.expect(body.token).to.be.a(\"string\").and.not.empty;\n  pm.environment.set(\"token\", body.token);   // পরের request এর জন্য সেভ\n});"
+                    ],
+                    "_lastExecutionId": "d5a699bb-0afb-4dc1-954f-f1ffd55e9bb2"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "0270bb06-7693-4592-9909-ed9393b1151a",
+              "name": "Login with Wrong Password",
+              "request": {
+                "url": {
+                  "path": [
+                    "auth"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"wrongpass\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "99048ccf-095f-49d9-bee4-226cf7271468",
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"ভুল login এ token আসেনি\", () => {\r\n  const body = pm.response.json();\r\n  pm.expect(body.token).to.be.undefined;\r\n  pm.expect(body.reason).to.eql(\"Bad credentials\");\r\n});"
+                    ],
+                    "_lastExecutionId": "e5213d1b-2d0c-4c83-a5ce-f3ed2f497f02"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "9967ac70-2b63-4f23-b09e-8c2b798af141",
+              "name": "Create Booking",
+              "request": {
+                "url": {
+                  "path": [
+                    "booking"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"firstname\": \"Rahul\",\r\n  \"lastname\": \"Das\",\r\n  \"totalprice\": 500,\r\n  \"depositpaid\": true,\r\n  \"bookingdates\": {\r\n    \"checkin\": \"2026-12-01\",\r\n    \"checkout\": \"2026-12-05\"\r\n  },\r\n  \"additionalneeds\": \"Breakfast\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "9240e89c-b488-4553-ac6c-2b89c3a92e43",
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code 200\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\nconst body = pm.response.json();\r\n\r\npm.test(\"bookingid এসেছে\", () => {\r\n  pm.expect(body.bookingid).to.be.a(\"number\");\r\n  pm.environment.set(\"bookingId\", body.bookingid);\r\n});\r\n\r\npm.test(\"ডেটা ঠিক আছে\", () => {\r\n  pm.expect(body.booking.firstname).to.eql(\"Rahul\");\r\n  pm.expect(body.booking.lastname).to.eql(\"Das\");\r\n  pm.expect(body.booking.totalprice).to.eql(500);\r\n  pm.expect(body.booking.bookingdates.checkin).to.eql(\"2026-12-01\");\r\n});"
+                    ],
+                    "_lastExecutionId": "5d77c7bc-fafe-4931-b53b-5f0be9a3646d"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "738ec893-9c82-4b26-9945-988ccc958966",
+              "name": "Get Booking",
+              "request": {
+                "url": {
+                  "path": [
+                    "booking",
+                    "{{bookingId}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "179de5aa-3616-4aa7-919a-6a0ecc29262f",
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code 200\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"সঠিক booking ফিরেছে\", () => {\r\n  const body = pm.response.json();\r\n  pm.expect(body.firstname).to.eql(\"Rahul\");\r\n  pm.expect(body.totalprice).to.eql(500);\r\n});"
+                    ],
+                    "_lastExecutionId": "6dcc47e2-5304-4171-ab63-37a24b3204d9"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "23c1a848-26be-4539-ba8a-cb47ddb91ad9",
+              "name": "Update Booking",
+              "request": {
+                "url": {
+                  "path": [
+                    "booking",
+                    "{{bookingId}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Cookie",
+                    "value": "token={{token}}"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"firstname\": \"Rahul\",\r\n  \"lastname\": \"Sharma\",\r\n  \"totalprice\": 700,\r\n  \"depositpaid\": true,\r\n  \"bookingdates\": {\r\n    \"checkin\": \"2026-12-01\",\r\n    \"checkout\": \"2026-12-05\"\r\n  },\r\n  \"additionalneeds\": \"Dinner\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "5c661c27-8560-4dd5-84c3-21f06dd60df1",
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code 200\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"আপডেট হয়েছে\", () => {\r\n  const body = pm.response.json();\r\n  pm.expect(body.lastname).to.eql(\"Sharma\");\r\n  pm.expect(body.totalprice).to.eql(700);\r\n  pm.expect(body.additionalneeds).to.eql(\"Dinner\");\r\n});"
+                    ],
+                    "_lastExecutionId": "886b7768-96f4-4697-911b-0494b8ecd2df"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "3deea756-df20-4de1-a971-f889a16ce5a4",
+              "name": "Delete Booking",
+              "request": {
+                "url": {
+                  "path": [
+                    "booking",
+                    "{{bookingId}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "",
+                      "value": ""
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Cookie",
+                    "value": "token={{token}}"
+                  }
+                ],
+                "method": "DELETE"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "22e43d19-efe0-4ac4-9d1c-0c132eca6520",
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code 201 (Created)\", () => {\r\n  pm.response.to.have.status(201);\r\n});"
+                    ],
+                    "_lastExecutionId": "0428dbfe-fb98-43cb-a6cf-dedc118882e3"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "3a5dea2b-a9f8-495f-8739-1b3e365c4efa",
+              "name": "Get Deleted Booking (verify)",
+              "request": {
+                "url": {
+                  "path": [
+                    "booking",
+                    "{{bookingId}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET"
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "83dd3ecd-0cc6-4d13-b846-baee725b054c",
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code 404 (আর নেই)\", () => {\r\n  pm.response.to.have.status(404);\r\n});"
+                    ],
+                    "_lastExecutionId": "50d0a4eb-ea08-469e-834f-fa3ca63ea439"
+                  }
+                }
+              ]
+            }
+          ],
+          "event": [],
+          "variable": [],
+          "info": {
+            "_postman_id": "e9f2fd37-b766-42eb-b014-51ba33ba5060",
+            "name": "Restful Booker API Tests",
+            "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+            "description": {
+              "content": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+              "type": "text/plain"
+            }
+          }
+        },
+        "cursor": {
+          "position": 0,
+          "iteration": 0,
+          "length": 8,
+          "cycles": 1,
+          "empty": false,
+          "eof": false,
+          "bof": true,
+          "cr": false,
+          "ref": "edead6e8-1195-4eb6-be1c-165a0a66855f",
+          "httpRequestId": "aa01c76f-50af-46d6-be53-58f00cecffd2",
+          "scriptId": "3ae73f70-353e-4e48-b92f-65a35e2cc6de",
+          "execution": "7170a54e-7b87-48f0-8aa1-e8fdd536c8bb"
+        }
+      }
+    ],
+    "error": null
+  }
+}
