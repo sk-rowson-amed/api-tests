@@ -1,0 +1,39 @@
+name: API Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '30 3 * * *'   # প্রতিদিন ভারতীয় সময় সকাল ৯:০০
+  workflow_dispatch:        # হাতে চালানোর বাটন
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: কোড নামান
+        uses: actions/checkout@v4
+
+      - name: Node.js সেটআপ
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Newman ইনস্টল
+        run: npm install -g newman newman-reporter-htmlextra
+
+      - name: API টেস্ট চালান
+        run: |
+          newman run collections/restful-booker.postman_collection.json \
+            -e environments/staging.postman_environment.json \
+            --env-var "password=${{ secrets.API_PASSWORD }}" \
+            -r cli,htmlextra \
+            --reporter-htmlextra-export reports/report.html
+
+      - name: রিপোর্ট সংরক্ষণ
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-report
+          path: reports/
