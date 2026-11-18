@@ -1,0 +1,26 @@
+
+
+Hello Sir,
+
+Today's activities are as follows:
+
+Regression Testing - Version 219.0 (Dev Environment)
+Execution Summary:
+
+Total Executed Test Cases: 115
+Passed Test Cases: 115
+Failed Test Cases: 0
+
+Executed Sub-modules:
+CPR All Service Areas (ID: 69855) - 9
+CPR Home (ID: 69850) - 7
+CPR My Action Page (ID: 69851) - 20
+CPR View All Actions Page (ID: 69852) - 20
+CPR My Service (ID: 69853) - 9
+End-to-End Business Process (ID: 69825) - 11
+CPR Regression Test (ID: 69753) - 39
+
+
+Thanks,
+Rowson
+#3354
